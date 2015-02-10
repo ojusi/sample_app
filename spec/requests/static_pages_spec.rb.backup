@@ -1,52 +1,61 @@
 require 'rails_helper'
 
+def full_title(page_title)
+  base_title = "Ingredient Guru's 'What's in it?' Blog"
+  if page_title.empty?
+    base_title
+  else
+    "#{base_title} | #{page_title}"
+  end
+end
+
+
+
 RSpec.describe "StaticPages", :type => :request do
 
-  describe "GET /static_pages/home" do
-    it "should have content 'Sample App'" do
-      visit '/static_pages/home'
-      expect(page).to have_content('Sample App')
-    end
-    it "should have the h1 'Sample App'" do
-      visit '/static_pages/home'
-      expect(page).to have_selector('h1', :text => 'Sample App')
-    end
-    it "should have the title 'Home'" do
-      visit '/static_pages/home'
-      expect(page).to have_selector('title', 
-                      :text => "Ruby on Rails Tutorial Sample App | Home")
-    end
-  end
- 
-  describe "GET /static_pages/help" do
-    it "should have the content 'Help'" do
-      visit '/static_pages/help'
-      expect(page).to have_content('Help')
-    end
-    it "should have the h1 'Help'" do
-      visit '/static_pages/help'
-      expect(page).to have_selector('h1', :text => 'Help')
-    end
-    it "should have the title 'Help'" do
-      visit '/static_pages/help'
-      expect(page).to have_selector('title', 
-                      :text => "Ruby on Rails Tutorial Sample App | Help")
-    end
+  subject { page }
+  
+  shared_examples_for "all static pages" do 
+    it { should have_selector('h1', text: heading) }
+    it { should have_title(full_title(page_title)) }
   end
 
-  describe "GET /static_pages/about" do
-    it "should have the content 'About Us'" do
-      visit '/static_pages/about'
-      expect(page).to have_content('About Us')
-    end
-    it "should have the h1 'About Us'" do
-      visit '/static_pages/about'
-      expect(page).to have_selector('h1', :text => 'About Us')
-    end
-    it "should have the title 'About Us'" do
-      visit '/static_pages/about'
-      expect(page).to have_selector('title', 
-                      :text => "Ruby on Rails Tutorial Sample App | About Us")
-    end
+  describe "GET /static_pages/home" do
+    before { visit root_path }
+    let(:heading)  { "What's in it" }
+    let(:page_title) { 'Home' }
+
+    it_should_behave_like "all static pages"
+    it { should have_content("What's in it") }
   end
+
+
+  describe "GET /static_pages/help" do
+    before { visit help_path }
+    let(:heading)  { "Help" }
+    let(:page_title) { 'Help' }
+
+    it_should_behave_like "all static pages"
+    it { should have_content("Help") }
+  end
+
+
+  describe "GET /static_pages/about" do
+    before { visit about_path }
+    let(:heading)  { 'About Us' }
+    let(:page_title) { 'About Us' }
+
+    it_should_behave_like "all static pages"
+    it { should have_content('About Us') }
+  end
+
+  describe "GET /static_pages/contact" do
+    before { visit contact_path }
+    let(:heading)  { "Contact" }
+    let(:page_title) { 'Contact' }
+
+    it_should_behave_like "all static pages"
+    it { should have_content("Contact") }
+  end
+
 end
